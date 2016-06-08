@@ -8,3 +8,9 @@
 /spec/reports/
 /tmp/
 /*.gem
+
+# added by GitSavvy
+/paitin_hana.sublime-project
+
+# added by GitSavvy
+/paitin_hana.sublime-workspace
