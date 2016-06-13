@@ -7,11 +7,20 @@ require "paitin_hana/routing/router"
 
 module PaitinHana
   class Application
+    attr_reader :routes
+    def initialize
+      @routes = PaitinHana::Routing::Router.new
+    end
+
     def call(env)
       if env["PATH_INFO"] == "/favicon.ico"
         return [500, {}, []]
       end
-      get_rack_app(env).call(env)
+      check_url(env)
+    end
+
+    def check_url(env)
+      @routes.check_url(env)
     end
   end
 end
