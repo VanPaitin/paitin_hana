@@ -1,9 +1,26 @@
 require "paitin_hana/version"
+require "paitin_hana/base_controller"
+require "pry"
+require "paitin_hana/utilities"
+require "paitin_hana/dependencies"
+require "paitin_hana/routing/router"
 
 module PaitinHana
   class Application
+    attr_reader :routes
+    def initialize
+      @routes = PaitinHana::Routing::Router.new
+    end
+
     def call(env)
-      [200, {}, ["I respond to all request"]]
+      if env["PATH_INFO"] == "/favicon.ico"
+        return [500, {}, []]
+      end
+      check_url(env)
+    end
+
+    def check_url(env)
+      @routes.check_url(env)
     end
   end
 end
