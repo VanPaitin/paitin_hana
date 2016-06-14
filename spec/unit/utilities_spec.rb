@@ -42,4 +42,50 @@ describe "Utility Methods" do
       it { expect("person".camel_case).to eq "Person" }
     end
   end
+
+  context "#pluralize" do
+    context "girl" do
+      it { expect("girl".pluralize).to eq "girls" }
+    end
+
+    context "buzz" do
+      it { expect("buzz".pluralize).to eq "buzzes" }
+    end
+
+    context "story" do
+      it { expect("story".pluralize).to eq "stories" }
+    end
+
+    context "toy" do
+      it { expect("toy".pluralize).to eq "toys" }
+    end
+
+    context "scarf" do
+      it { expect("scarf".pluralize).to eq "scarves" }
+    end
+
+    context "analysis" do
+      it { expect("analysis".pluralize).to eq "analyses" }
+    end
+
+    context "curriculum" do
+      it { expect("curriculum".pluralize).to eq "curricula" }
+    end
+
+    context "criterion" do
+      it { expect("criterion".pluralize).to eq "criteria" }
+    end
+
+    context "amoeba" do
+      it { expect("amoeba".pluralize).to eq "amoebae" }
+    end
+
+    context "focus" do
+      it { expect("focus".pluralize).to eq "foci" }
+    end
+
+    context "bureau" do
+      it { expect("bureau".pluralize).to eq "bureaux" }
+    end
+  end
 end
