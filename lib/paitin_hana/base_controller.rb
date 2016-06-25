@@ -13,6 +13,10 @@ module PaitinHana
       request.params
     end
 
+    def redirect_to(path, status: 301)
+      response([], status, Location: path)
+    end
+
     def response(body, status = 200, headers = {})
       @response ||= Rack::Response.new(body, status, headers)
     end
@@ -26,14 +30,14 @@ module PaitinHana
     end
 
     def render_template(view_name, locals = {})
-      file_name = File.join("app/views", controller_name, "#{view_name}.erb")
-      template = Tilt::ERBTemplate.new(file_name)
-      vars = {}
-      instance_variables.each do |var|
-        key = var.to_s.gsub("@", "").to_sym
-        vars[key] = instance_variable_get(var)
+      locals[:title] = view_name
+      file_name = Tilt::ERBTemplate.new(
+        File.join("app/views", controller_name, "#{view_name}.erb")
+      )
+      template = Tilt::ERBTemplate.new("app/views/layout/application.erb")
+      template.render(self, locals) do
+        file_name.render(self, locals)
       end
-      template.render(self, locals.merge(vars))
     end
 
     def controller_name
