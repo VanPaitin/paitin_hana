@@ -28,6 +28,7 @@ module PaitinHana
 
       def pattern_for path
         placeholders = []
+        return [Regexp.new("\/"), placeholders] if path == "/"
         path_bits = path.split("/")
         path_bits = path_bits.map do |bit|
           if bit[0] == ":"
