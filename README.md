@@ -1,8 +1,12 @@
 # PaitinHana
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/paitin_hana`. To experiment with that code, run `bin/console` for an interactive prompt.
+PaitinHana is an MVC ruby mini-framework, that is modeled after rails. PaitinHana takes majority of its inspiration from rails but it is not by any means as complex or robust as rails.
 
-TODO: Delete this and the text above, and describe your gem
+It is however a good fit for simple applications. It makes available some of the great features of rails.
+
+## Version
+
+The current version is 0.1.0
 
 ## Installation
 
@@ -20,9 +24,61 @@ Or install it yourself as:
 
     $ gem install paitin_hana
 
+## Features
+  * ORM
+  * Supports Testing.
+  * Custom model properties types e.g int, str, time and date.
+  * Render html views that support Javascript DOM manipulations
+  
 ## Usage
 
-TODO: Write usage instructions here
+When creating a new PaitinHana app, a few things need to be setup and a few rules adhered to. PaitinHana basically follows the same folder structure as a typical rails app with all of the models, views and controller code packed inside of an app folder, configuration based code placed inside a config folder and the main database file in a db folder.
+
+View a sample app built using PaitinHana framework [Here](https://github.com/andela-mpitan/my_todo_list)
+
+### Routing
+Routing with PaitinHana deals with directing requests to the appropriate controllers. A sample route file is:
+
+```ruby
+TodoApplication.routes.draw do
+  get "/todo", to: "todo#index"
+  get "/todo/new", to: "todo#new"
+  post "/todo", to: "todo#create"
+  get "/todo/:id", to: "todo#show"
+  get "/todo/:id/edit", to: "todo#edit"
+  patch "/todo/:id", to: "todo#update"
+  put "/todo/:id", to: "todo#update"
+  delete "/todo/:id", to: "todo#destroy"
+end
+```
+PaitinHana can support GET, DELETE, PATCH, POST, PUT requests.
+
+
+### Models
+All models to be used with the PaitinHana framework are to inherit from the BaseModel class provided by PaitinHana, in order to access the rich ORM functionalities provided. The BaseModel class acts as an interface between the model class and its database representation. A sample model file is provided below:
+
+```ruby
+class Todo < PaitinHana::ORM::BaseModel
+  property :id, type: :integer, primary_key: true
+  property :title, type: :text, nullable: false
+  property :body, type: :text, nullable: false
+  property :status, type: :text, nullable: false
+  property :created_at, type: :text, nullable: false
+  create_table
+end
+```
+
+The `property` method is provided to declare table columns, and their properties. The first argument to `property` is the column name, while subsequent hash arguments are used to provide information about properties.
+
+## Limitations
+
+  This version of the gem does not include...
+  * support model relationships.
+  * implement callbacks.
+  * support migration generation.
+  * generate a schema.
+  * handle floating point precision numbers.
+  * support generators
 
 ## Development
 
@@ -32,7 +88,15 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/paitin_hana. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/andela-mpitan/paitin_hana. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Below is the simple guideline for contributing.
+
+    - [Fork it](https://github.com/andela-mpitan/paitin_hana/fork)
+    - Create your feature branch (git checkout -b my-new-feature)
+    - Commit your changes (git commit -am 'Add some feature')
+    - Push to the branch (git push origin my-new-feature)
+    - Create a new Pull Request
+
 
 
 ## License
