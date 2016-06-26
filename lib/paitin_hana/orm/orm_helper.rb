@@ -60,7 +60,7 @@ module PaitinHana
           row = db.execute(
             "SELECT * from #{table_name} WHERE id= ?", "#{id}"
           ).first
-          row.nil? ? nil : find_object row
+          row.nil? ? nil : find_object(row)
         end
 
         def self.count
