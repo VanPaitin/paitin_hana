@@ -4,6 +4,9 @@ require "pry"
 require "paitin_hana/utilities"
 require "paitin_hana/dependencies"
 require "paitin_hana/routing/router"
+require "paitin_hana/routing/mapper"
+require "paitin_hana/orm/database"
+require "paitin_hana/orm/base_model"
 
 module PaitinHana
   class Application
@@ -20,7 +23,8 @@ module PaitinHana
     end
 
     def check_url(env)
-      @routes.check_url(env)
+      request = Rack::Request.new(env)
+      @routes.check_url(request, env)
     end
   end
 end
