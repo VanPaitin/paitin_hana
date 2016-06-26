@@ -8,6 +8,8 @@ AllCops:
     - "spec/spec_helper.rb"
     - "Rakefile"
     - "test/test_helper.rb"
+    - "paitin_hana.gemspec"
+    - "lib/paitin_hana/routing/router.rb"
   UseCache: false
 Style/CollectionMethods:
   Description: Preferred collection methods.

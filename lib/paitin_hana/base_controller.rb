@@ -1,5 +1,5 @@
 require "erb"
-require 'tilt'
+require "tilt"
 
 module PaitinHana
   class BaseController

@@ -1,22 +1,22 @@
 require_relative "orm_helper"
 module PaitinHana
   module ORM
-	  class BaseModel
+    class BaseModel
       include PaitinHana::ORM::ORMHelper
       def initialize(attributes = {})
         attributes.each { |column, value| send("#{column}=", value) }
       end
-	    class << self
-		    attr_accessor :properties, :db
-		    def create_table
-		      @db ||= PaitinHana::ORM::Database.connect
-    		  query = <<-TABLE
+      class << self
+        attr_accessor :properties, :db
+        def create_table
+          @db ||= PaitinHana::ORM::Database.connect
+          query = <<-TABLE
     		  CREATE TABLE IF NOT EXISTS #{table_name} (
-            #{table_fields.join(", ")}
+            #{table_fields.join(', ')}
           )
     		  TABLE
-    		  db.execute(query)
-    		end
+          db.execute(query)
+        end
 
         def table_name
           to_s.downcase.pluralize
@@ -45,7 +45,7 @@ module PaitinHana
           fields
         end
 
-        def analyze_info property_field, info
+        def analyze_info(property_field, info)
           info.each do |key, value|
             property_field << send(key.to_s, value)
           end
@@ -63,7 +63,7 @@ module PaitinHana
           "NOT NULL" unless value
         end
 
-        def find_object row
+        def find_object(row)
           return nil unless row
           object = new
           properties.keys.each_with_index do |key, index|
@@ -71,9 +71,7 @@ module PaitinHana
           end
           object
         end
-	    end
-	  end
+      end
+    end
   end
 end
-
-

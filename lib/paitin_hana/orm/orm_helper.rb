@@ -1,7 +1,7 @@
 module PaitinHana
   module ORM
     module ORMHelper
-      def self.included base
+      def self.included(base)
         base.extend ClassMethods
       end
 
@@ -56,7 +56,7 @@ module PaitinHana
           result.map { |row| find_object(row) }
         end
 
-        def find id
+        def find(id)
           row = db.execute(
             "SELECT * from #{table_name} WHERE id= ?", "#{id}"
           ).first
