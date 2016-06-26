@@ -10,7 +10,7 @@ module PaitinHana
         query = if id
                   "UPDATE #{table} SET #{update_placeholders} WHERE id = ?"
                 else
-                  "INSERT INTO #{table} (#{table_columns}) VALUES "\
+                  "INSERT INTO #{table} (#{self.class.table_columns}) VALUES "\
                   "(#{record_placeholders})"
                 end
         values = id ? record_values << send("id") : record_values
@@ -34,8 +34,12 @@ module PaitinHana
         attributes.values << id
       end
 
+      def record_placeholders
+        (["?"] * (self.class.properties.keys.size - 1)).join(",")
+      end
+
       def record_values
-        column_names = self.class.properties_keys
+        column_names = self.class.properties.keys
         column_names.delete(:id)
         column_names.map { |column_name| send(column_name) }
       end
@@ -47,19 +51,16 @@ module PaitinHana
 
       module ClassMethods
         def all
-          query = "SELECT #{table_columns.join(', ')} FROM #{table_name} "\
-            "ORDER BY id DESC"
+          query = "SELECT * FROM #{table_name} ORDER BY id DESC"
           result = db.execute query
           result.map { |row| find_object(row) }
         end
 
         def find id
-          row = db.execute("SELECT * from #{table_name} WHERE id= ?", id).first
-          if row
-            find_object row
-          else
-            nil
-          end
+          row = db.execute(
+            "SELECT * from #{table_name} WHERE id= ?", "#{id}"
+          ).first
+          row.nil? ? nil : find_object row
         end
 
         def self.count

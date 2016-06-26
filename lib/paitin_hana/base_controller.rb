@@ -14,7 +14,7 @@ module PaitinHana
     end
 
     def redirect_to(path, status: 301)
-      response([], status, Location: path)
+      response([], status, "Location" => path)
     end
 
     def response(body, status = 200, headers = {})

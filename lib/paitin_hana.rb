@@ -23,7 +23,8 @@ module PaitinHana
     end
 
     def check_url(env)
-      @routes.check_url(env)
+      request = Rack::Request.new(env)
+      @routes.check_url(request, env)
     end
   end
 end

@@ -1,3 +1,4 @@
+require_relative "orm_helper"
 module PaitinHana
   module ORM
 	  class BaseModel
@@ -28,7 +29,9 @@ module PaitinHana
         end
 
         def table_columns
-          @properties.keys
+          columns = @properties.keys
+          columns.delete(:id)
+          columns.map(&:to_s).join(", ")
         end
 
         def table_fields
@@ -63,7 +66,7 @@ module PaitinHana
         def find_object row
           return nil unless row
           object = new
-          table_columns.each_with_index do |key, index|
+          properties.keys.each_with_index do |key, index|
             object.send("#{key}=", row[index])
           end
           object
