@@ -1,11 +1,15 @@
 require "spec_helper"
 
-class PaitinHana::Routing::Router
-  attr_reader :route_info
+module PaitinHana
+  module Routing
+    class Router
+      attr_reader :route_info
 
-  def draw(&block)
-    instance_eval(&block)
-    self
+      def draw(&block)
+        instance_eval(&block)
+        self
+      end
+    end
   end
 end
 
@@ -27,10 +31,10 @@ describe PaitinHana::Routing::Router do
       end
 
       route_info = {
-                     path: "/photos",
-                     pattern: [%r{^/photos$}, []],
-                     class_and_method: ["PhotosController", :index]
-                   }
+        path: "/photos",
+        pattern: [%r{^/photos$}, []],
+        class_and_method: ["PhotosController", :index]
+      }
 
       it { is_expected.to eq route_info }
     end
@@ -41,10 +45,10 @@ describe PaitinHana::Routing::Router do
       end
 
       route_info = {
-                     path: "/photos/:id",
-                     pattern: [%r{^/photos/\w+$}, ["id"]],
-                     class_and_method: ["PhotosController", :show]
-                   }
+        path: "/photos/:id",
+        pattern: [%r{^/photos/(?<id>\w+)$}, ["id"]],
+        class_and_method: ["PhotosController", :show]
+      }
 
       it { is_expected.to eq route_info }
     end
@@ -56,28 +60,28 @@ describe PaitinHana::Routing::Router do
 
       regexp = %r{^/photos/\w+/edit$}
       route_info = {
-                     path: "/photos/:id/edit",
-                     pattern: [regexp, ["id"]],
-                     class_and_method: ["PhotosController", :edit]
-                   }
+        path: "/photos/:id/edit",
+        pattern: [regexp, ["id"]],
+        class_and_method: ["PhotosController", :edit]
+      }
 
       it { is_expected.to eq route_info }
     end
 
     context "get 'album/:album_id/photos/:photo_id',to: 'photos#album_photo'" do
       subject do
-        draw {
+        draw do
           get "/album/:album_id/photos/:photo_id",
-          to: "photos#album_photo"
-        }
+              to: "photos#album_photo"
+        end
       end
 
       regexp = %r{^/album/\w+/photos/\w+$}
       route_info = {
-                     path: "/album/:album_id/photos/:photo_id",
-                     pattern: [regexp, ["album_id", "photo_id"]],
-                     class_and_method: ["PhotosController", :album_photo]
-                   }
+        path: "/album/:album_id/photos/:photo_id",
+        pattern: [regexp, %w(album_id photo_id)],
+        class_and_method: ["PhotosController", :album_photo]
+      }
 
       it { is_expected.to eq route_info }
     end

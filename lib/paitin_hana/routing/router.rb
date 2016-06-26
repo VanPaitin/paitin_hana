@@ -38,25 +38,12 @@ module PaitinHana
       end
 
       def check_url(request, env)
-        request_method = env["REQUEST_METHOD"].downcase.to_sym
-        if !@@allowed_methods.include?(request_method)
+        @request = request
+        @request_method = env["REQUEST_METHOD"].downcase.to_sym
+        if !@@allowed_methods.include?(@request_method)
           return [404, {}, ["invalid method"]]
         end
-        url = env["PATH_INFO"]
-        if @app_routes[request_method].any? { |route| route[:pattern][0] =~ url }
-          route = @app_routes[request_method].detect { |router| router[:pattern][0] =~ url }
-          match_data = Regexp.last_match
-          route[:pattern][1].each do |placeholder|
-            request.update_param(placeholder, match_data[placeholder])
-          end
-          controller = Object.const_get(route[:class_and_method][0])
-          action = route[:class_and_method][1]
-          controller_instance = controller.new(env)
-          response = controller_instance.send(action)
-          dispatcher(controller_instance, action)
-        else
-          [404, {}, ["Route not found"]]
-        end
+        rack_response(env)
       end
 
       def controller_and_action_for(path_to)
@@ -65,14 +52,23 @@ module PaitinHana
         [controller, action.to_sym]
       end
 
-      def dispatcher(controller_instance, action)
-        if controller_instance.get_response
-          controller_instance.get_response
+      def rack_response(env)
+        route_match = @app_routes[@request_method].any? do |route|
+          route[:pattern][0] =~ env["PATH_INFO"]
+        end
+        map_to_action(route_match, env)
+      end
+
+      def map_to_action(route_match, env)
+        app_routes = @app_routes[@request_method]
+        if route_match
+          mapper = PaitinHana::Routing::Mapper.new(app_routes)
+          mapper.update_params(@request, env)
         else
-          controller_instance.render(action)
-          controller_instance.get_response
+          [404, {}, ["Route not found"]]
         end
       end
+
     end
   end
 end
