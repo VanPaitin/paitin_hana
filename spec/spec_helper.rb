@@ -1,5 +1,4 @@
 require "codeclimate-test-reporter"
-CodeClimate::TestReporter.start
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 $LOAD_PATH.unshift File.expand_path("../../spec", __FILE__)
 ROOT_FOLDER = __dir__ + "/my_todo_list"
@@ -8,6 +7,7 @@ require 'rspec'
 require 'rack/test'
 require "my_todo_list/config/application.rb"
 
+CodeClimate::TestReporter.start
 
 ENV['RACK_ENV'] = 'test'
 
