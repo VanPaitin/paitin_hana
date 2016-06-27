@@ -19,7 +19,7 @@ module PaitinHana
         end
 
         def table_name
-          to_s.downcase.pluralize
+          to_s.downcase.pluralizes
         end
 
         def property(column_name, info)

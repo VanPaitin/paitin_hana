@@ -17,6 +17,8 @@ module PaitinHana
         self.class.db.execute query, values
       end
 
+      alias save! save
+
       def update(attributes)
         table = self.class.table_name
         query = "UPDATE #{table} SET #{update_placeholders(attributes)}"\
@@ -63,12 +65,29 @@ module PaitinHana
           row.nil? ? nil : find_object(row)
         end
 
-        def self.count
+        def count
           result = db.execute "SELECT COUNT(*) FROM #{table_name}"
           result.first.first
         end
 
-        def self.destroy(id)
+        def create(attributes)
+          object = new(attributes)
+          object.save
+          id = db.execute "SELECT last_insert_rowid()"
+          object.id = id.first.first
+          object
+        end
+
+        [%w(last DESC), %w(first ASC)].each do |method_name_and_order|
+          define_method((method_name_and_order[0]).to_s.to_sym) do
+            query = "SELECT * FROM #{table_name} ORDER BY "\
+            "id #{method_name_and_order[1]} LIMIT 1"
+            row = db.execute query
+            find_object(row.first) unless row.empty?
+          end
+        end
+
+        def destroy(id)
           db.execute "DELETE FROM #{table_name} WHERE id= ?", id
         end
 

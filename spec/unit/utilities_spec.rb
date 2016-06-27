@@ -43,49 +43,49 @@ describe "Utility Methods" do
     end
   end
 
-  context "#pluralize" do
+  context "#pluralizes" do
     context "girl" do
-      it { expect("girl".pluralize).to eq "girls" }
+      it { expect("girl".pluralizes).to eq "girls" }
     end
 
     context "buzz" do
-      it { expect("buzz".pluralize).to eq "buzzes" }
+      it { expect("buzz".pluralizes).to eq "buzzes" }
     end
 
     context "story" do
-      it { expect("story".pluralize).to eq "stories" }
+      it { expect("story".pluralizes).to eq "stories" }
     end
 
     context "toy" do
-      it { expect("toy".pluralize).to eq "toys" }
+      it { expect("toy".pluralizes).to eq "toys" }
     end
 
     context "scarf" do
-      it { expect("scarf".pluralize).to eq "scarves" }
+      it { expect("scarf".pluralizes).to eq "scarves" }
     end
 
     context "analysis" do
-      it { expect("analysis".pluralize).to eq "analyses" }
+      it { expect("analysis".pluralizes).to eq "analyses" }
     end
 
     context "curriculum" do
-      it { expect("curriculum".pluralize).to eq "curricula" }
+      it { expect("curriculum".pluralizes).to eq "curricula" }
     end
 
     context "criterion" do
-      it { expect("criterion".pluralize).to eq "criteria" }
+      it { expect("criterion".pluralizes).to eq "criteria" }
     end
 
     context "amoeba" do
-      it { expect("amoeba".pluralize).to eq "amoebae" }
+      it { expect("amoeba".pluralizes).to eq "amoebae" }
     end
 
     context "focus" do
-      it { expect("focus".pluralize).to eq "foci" }
+      it { expect("focus".pluralizes).to eq "foci" }
     end
 
     context "bureau" do
-      it { expect("bureau".pluralize).to eq "bureaux" }
+      it { expect("bureau".pluralizes).to eq "bureaux" }
     end
   end
 end
