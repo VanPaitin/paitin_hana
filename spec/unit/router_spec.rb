@@ -58,7 +58,7 @@ describe PaitinHana::Routing::Router do
         draw { get "/photos/:id/edit", to: "photos#edit" }
       end
 
-      regexp = %r{^/photos/\w+/edit$}
+      regexp = %r{^/photos/(?<id>\w+)/edit$}
       route_info = {
         path: "/photos/:id/edit",
         pattern: [regexp, ["id"]],
@@ -76,7 +76,7 @@ describe PaitinHana::Routing::Router do
         end
       end
 
-      regexp = %r{^/album/\w+/photos/\w+$}
+      regexp = %r{^/album/(?<album_id>\w+)/photos/(?<photo_id>\w+)$}
       route_info = {
         path: "/album/:album_id/photos/:photo_id",
         pattern: [regexp, %w(album_id photo_id)],

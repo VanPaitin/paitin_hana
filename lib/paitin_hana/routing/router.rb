@@ -30,11 +30,11 @@ module PaitinHana
 
       def pattern_for(path)
         placeholders = []
-        path.gsub!(/(:\w+)/) do |match|
-          placeholders << match[1..-1]
+        my_path = path.gsub(/(:\w+)/) do |match|
+          placeholders << match[1..-1].freeze
           "(?<#{placeholders.last}>\\w+)"
         end
-        [/^#{path}$/, placeholders]
+        [/^#{my_path}$/, placeholders]
       end
 
       def check_url(request, env)
