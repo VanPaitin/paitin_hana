@@ -1,0 +1,24 @@
+<div class="row">
+  <div class="col-sm-6 col-md-offset-3">
+    <h2>Edit Item</h2>
+    <form role="form" action="/todo/<%= @todolist.id %>" method="post">
+      <input type="hidden" name="_method" value="put">
+      <div class="form-group">
+        <label for="title">Title:</label> <br />
+        <input type="text" name="title" value="<%= @todolist.title %>" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="todo">Todo:</label>
+        <textarea rows="5" cols="10" name="todo" class="form-control"><%= @todolist.todo %></textarea>
+      </div>
+
+        <div class="radio">
+          <label><input type="radio" name="status" value="pending">Pending</label>
+        </div>
+        <div class="radio">
+          <label><input type="radio" name="status" value="done" checked>Done</label>
+        </div>
+      <input type="submit" class="btn btn-success">
+    </form>
+   </div>
+</div>

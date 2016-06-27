@@ -1,0 +1,13 @@
+
+
+
+<div class="panel panel-default">
+  <div class="panel-heading"><b><%= @todolist.title %></b></div>
+  <div class="panel-body"><%= @todolist.todo %></div>
+
+    <div class="panel-footer">Created at : <span><b><%= @todolist.created_at %></b></span><br>
+    Last Updated at <b><i><%= @todolist.updated_at %></i></b>
+    </div>
+</div>
+
+<a href="/todo/<%= @todolist.id %>/edit" class="btn btn-success"><span class="glyphicon glyphicon-pencil"></span> Edit</a>

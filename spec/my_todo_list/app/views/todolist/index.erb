@@ -1,0 +1,71 @@
+<% if @todolists.empty? %>
+  <h3>You have not created any Todos</h3>
+<% else %>
+  <table class="table table-bordered table-hover table-condensed">
+    <thead>
+      <th>
+        Title
+      </th>
+      <th>
+        Content
+      </th>
+      <th colspan="3">
+        Status
+      </th>
+
+
+    </thead>
+    <tbody>
+      <% @todolists.each do |todo| %>
+      <tr>
+        <td>
+          <a href="/todo/<%= todo.id %>"><%= todo.title %></a>
+        </td>
+        <td>
+          <%= todo.todo %>
+        </td>
+        <td>
+          <%= todo.status.capitalize %>
+        </td><td><a href="/todo/<%= todo.id %>/edit">Edit</a></td>
+        <td>
+          <form action="/todo/<%= todo.id %>" method="post" id="delete-form-<%= todo.id %>">
+            <input type="hidden" name="_method" value="delete">
+            <input type="submit" value="Delete" data-toggle="modal" class="btn btn-danger delete_btn" data-target="#delete_confirmation">
+          </form></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+<div id="delete_confirmation" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Confirm Action</h4>
+      </div>
+      <div class="modal-body">
+        <p>Do you want to delete this item? </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" id="do_delete" data-form-id="">Yes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script type="text/javascript">
+  $(document).ready(function() {
+    var deleteBtns = $('.delete_btn');
+    deleteBtns.on('click', function(event) {
+      event.preventDefault();
+      $('#do_delete').attr({'data-form-id': $(this).parent().attr('id')});
+    });
+
+    $('#do_delete').on('click', function() {
+      var that = $(this);
+      $('#' + that.data('form-id')).submit();
+      reload();
+    });
+  });
+</script>
