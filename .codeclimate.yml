@@ -12,6 +12,9 @@ engines:
     enabled: true
   rubocop:
     enabled: true
+    checks:
+      Rubocop/Style/UnneededInterpolation:
+        enabled: false
 ratings:
   paths:
   - "**.inc"

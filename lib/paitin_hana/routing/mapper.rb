@@ -21,17 +21,15 @@ module PaitinHana
         controller = Object.const_get(route[:class_and_method][0])
         action = route[:class_and_method][1]
         controller_instance = controller.new(env)
-        response = controller_instance.send(action)
+        controller_instance.send(action)
         dispatcher(controller_instance, action)
       end
 
       def dispatcher(controller_instance, action)
-        if controller_instance.get_response
-          controller_instance.get_response
-        else
+        unless controller_instance.get_response
           controller_instance.render(action)
-          controller_instance.get_response
         end
+        controller_instance.get_response
       end
     end
   end
