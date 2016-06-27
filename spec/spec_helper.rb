@@ -9,7 +9,7 @@ require 'rspec'
 require 'rack/test'
 require "my_todo_list/config/application.rb"
 
-# CodeClimate::TestReporter.start
+CodeClimate::TestReporter.start
 
 ENV['RACK_ENV'] = 'test'
 

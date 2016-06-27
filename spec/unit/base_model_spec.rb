@@ -166,12 +166,6 @@ RSpec.describe PaitinHana::ORM::BaseModel do
           @new_record.save
         end.to change(Todo, :count).by 0
       end
-
-      # it "updates the object" do
-      #   @new_record.body = "unit testing"
-      #   @new_record.save
-      #   expect(@new_record.body).to eq "unit testing"
-      # end
     end
   end
 end
