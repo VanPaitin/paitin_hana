@@ -31,13 +31,18 @@ module PaitinHana
 
     def render_template(view_name, locals = {})
       locals[:title] = view_name
-      file_name = Tilt::ERBTemplate.new(
-        File.join("app/views", controller_name, "#{view_name}.erb")
+      layout_template = Tilt::ERBTemplate.new(
+        "#{ROOT_FOLDER}/app/views/layout/application.erb"
       )
-      template = Tilt::ERBTemplate.new("app/views/layout/application.erb")
-      template.render(self, locals) do
-        file_name.render(self, locals)
+      layout_template.render(self, locals) do
+        view_template(view_name).render(self, locals)
       end
+    end
+
+    def view_template(view_name)
+      Tilt::ERBTemplate.new(
+        File.join(ROOT_FOLDER, "app/views", controller_name, "#{view_name}.erb")
+      )
     end
 
     def controller_name

@@ -1,6 +1,6 @@
 class PagesController < PaitinHana::BaseController
   def about
-    render :about, {name: "Tutplus", lastname: "MVC frameworks"}
+    render :about, name: "Tutplus", lastname: "MVC frameworks"
   end
 
   def tell_me

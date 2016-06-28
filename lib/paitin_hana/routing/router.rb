@@ -37,10 +37,10 @@ module PaitinHana
         [/^#{my_path}$/, placeholders]
       end
 
-      def check_url(request, env)
-        @request = request
-        @request_method = env["REQUEST_METHOD"].downcase.to_sym
-        if !@@allowed_methods.include?(@request_method)
+      def check_url(env)
+        @request = Rack::Request.new(env)
+        @request_method = @request.request_method.downcase.to_sym
+        unless @@allowed_methods.include?(@request_method)
           return [404, {}, ["invalid method"]]
         end
         rack_response(env)
@@ -54,7 +54,7 @@ module PaitinHana
 
       def rack_response(env)
         route_match = @app_routes[@request_method].any? do |route|
-          route[:pattern][0] =~ env["PATH_INFO"]
+          route[:pattern][0] =~ @request.path_info
         end
         map_to_action(route_match, env)
       end
@@ -62,8 +62,8 @@ module PaitinHana
       def map_to_action(route_match, env)
         app_routes = @app_routes[@request_method]
         if route_match
-          mapper = PaitinHana::Routing::Mapper.new(app_routes)
-          mapper.update_params(@request, env)
+          mapper = PaitinHana::Routing::Mapper.new(app_routes, env)
+          mapper.update_params(@request)
         else
           [404, {}, ["Route not found"]]
         end

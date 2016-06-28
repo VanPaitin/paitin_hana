@@ -19,12 +19,7 @@ module PaitinHana
       if env["PATH_INFO"] == "/favicon.ico"
         return [500, {}, []]
       end
-      check_url(env)
-    end
-
-    def check_url(env)
-      request = Rack::Request.new(env)
-      @routes.check_url(request, env)
+      routes.check_url(env)
     end
   end
 end

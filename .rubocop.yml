@@ -9,6 +9,9 @@ AllCops:
     - "test/test_helper.rb"
     - "paitin_hana.gemspec"
     - "lib/paitin_hana/routing/router.rb"
+    - "lib/paitin_hana/orm/orm_helper.rb"
+    - "spec/my_todo_list/config/application.rb"
+    - "spec/factories/todo.rb"
   UseCache: false
 Style/CollectionMethods:
   Description: Preferred collection methods.
