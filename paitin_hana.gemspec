@@ -37,6 +37,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "faker"
   spec.add_development_dependency "selenium-webdriver"
   spec.add_development_dependency "factory_girl"
+  spec.add_development_dependency "simplecov"
 
   spec.add_runtime_dependency "rack", "~> 1.6"
   spec.add_runtime_dependency "tilt", "~> 2.0"
