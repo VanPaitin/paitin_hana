@@ -95,11 +95,11 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 Bug reports and pull requests are welcome on GitHub at https://github.com/andela-mpitan/paitin_hana. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 Below is the simple guideline for contributing.
 
-    - [Fork it](https://github.com/andela-mpitan/paitin_hana/fork)
-    - Create your feature branch (git checkout -b my-new-feature)
-    - Commit your changes (git commit -am 'Add some feature')
-    - Push to the branch (git push origin my-new-feature)
-    - Create a new Pull Request
+* [Fork it](https://github.com/andela-mpitan/paitin_hana/fork)
+* Create your feature branch (git checkout -b my-new-feature)
+* Commit your changes (git commit -am 'Add some feature')
+* Push to the branch (git push origin my-new-feature)
+* Create a new Pull Request
 
 
 
