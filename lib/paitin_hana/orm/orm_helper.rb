@@ -1,99 +1,68 @@
 module PaitinHana
   module ORM
     module ORMHelper
-      def self.included(base)
-        base.extend ClassMethods
+      def create_table
+        @db ||= PaitinHana::ORM::Database.connect
+        query = <<-TABLE
+        CREATE TABLE IF NOT EXISTS #{table_name} (
+          #{table_fields.join(', ')}
+        )
+        TABLE
+        db.execute(query)
       end
 
-      def save
-        table = self.class.table_name
-        query = if id
-                  "UPDATE #{table} SET #{update_placeholders} WHERE id = ?"
-                else
-                  "INSERT INTO #{table} (#{self.class.table_columns}) VALUES "\
-                  "(#{record_placeholders})"
-                end
-        values = id ? record_values << send("id") : record_values
-        self.class.db.execute query, values
+      def table_name
+        to_s.downcase.pluralizes
       end
 
-      alias save! save
-
-      def update(attributes)
-        table = self.class.table_name
-        query = "UPDATE #{table} SET #{update_placeholders(attributes)}"\
-        " WHERE id= ?"
-        self.class.db.execute(query, update_values(attributes))
+      def property(column_name, info)
+        @properties ||= {}
+        @properties[column_name] = info
+        attr_accessor column_name
       end
 
-      def update_placeholders(attributes = self.class.properties)
-        columns = attributes.keys
+      def table_columns
+        columns = @properties.keys
         columns.delete(:id)
-        columns.map { |column| "#{column}= ?" }.join(", ")
+        columns.map(&:to_s).join(", ")
       end
 
-      def update_values(attributes)
-        attributes.values << id
+      def table_fields
+        fields = []
+        @properties.each do |column, info|
+          property_field = []
+          property_field << column
+          analyze_info property_field, info
+          fields << property_field.join(" ")
+        end
+        fields
       end
 
-      def record_placeholders
-        (["?"] * (self.class.properties.keys.size - 1)).join(",")
+      def analyze_info(property_field, info)
+        info.each do |key, value|
+          property_field << send(key.to_s, value)
+        end
       end
 
-      def record_values
-        column_names = self.class.properties.keys
-        column_names.delete(:id)
-        column_names.map { |column_name| send(column_name) }
+      def type(value)
+        value.to_s
       end
 
-      def destroy
-        table = self.class.table_name
-        self.class.db.execute "DELETE FROM #{table} WHERE id= ?", id
+      def primary_key(value)
+        "PRIMARY KEY AUTOINCREMENT" if value
       end
 
-      module ClassMethods
-        def all
-          query = "SELECT * FROM #{table_name} ORDER BY id DESC"
-          result = db.execute query
-          result.map { |row| find_object(row) }
-        end
+      def nullable(value)
+        "NOT NULL" unless value
+      end
 
-        def find(id)
-          row = db.execute(
-            "SELECT * from #{table_name} WHERE id= ?", "#{id}"
-          ).first
-          row.nil? ? nil : find_object(row)
+      def find_object(row)
+        return nil unless row
+        object = new
+        properties.keys.each_with_index do |key, index|
+          object.send("#{key}=", row[index])
         end
-
-        def count
-          result = db.execute "SELECT COUNT(*) FROM #{table_name}"
-          result.first.first
-        end
-
-        def create(attributes)
-          object = new(attributes)
-          object.save
-          id = db.execute "SELECT last_insert_rowid()"
-          object.id = id.first.first
-          object
-        end
-
-        [%w(last DESC), %w(first ASC)].each do |method_name_and_order|
-          define_method((method_name_and_order[0]).to_s.to_sym) do
-            query = "SELECT * FROM #{table_name} ORDER BY "\
-            "id #{method_name_and_order[1]} LIMIT 1"
-            row = db.execute query
-            find_object(row.first) unless row.empty?
-          end
-        end
-
-        def destroy(id)
-          db.execute "DELETE FROM #{table_name} WHERE id= ?", id
-        end
-
-        def destroy_all
-          db.execute "DELETE FROM #{table_name}"
-        end
+        object
       end
     end
   end
