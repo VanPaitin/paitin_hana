@@ -1,7 +1,6 @@
-require "./config/application.rb"
-ROOT_FOLDER = __dir__
+require_relative "config/application.rb"
 use Rack::MethodOverride
 TodoList = MyTodoList::Application.new
-require "./config/routes.rb"
+require_relative "config/routes.rb"
 
 run TodoList

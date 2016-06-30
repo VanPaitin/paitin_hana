@@ -26,7 +26,7 @@ RSpec.shared_context type: :feature do
   require "capybara/rspec"
   before(:all) do
     app = Rack::Builder.parse_file(
-      "#{__dir__}/hyperloop/config.ru"
+      "#{__dir__}/my_todo_list/config.ru"
     ).first
     Capybara.app = app
   end
