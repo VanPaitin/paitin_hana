@@ -30,7 +30,7 @@
         <td>
           <form action="/todo/<%= todo.id %>" method="post" id="delete-form-<%= todo.id %>">
             <input type="hidden" name="_method" value="delete">
-            <input type="submit" value="Delete" data-toggle="modal" class="btn btn-danger delete_btn" data-target="#delete_confirmation">
+            <input type="submit" value="Delete" data-toggle="modal" class="btn btn-danger delete_btn" data-target="#delete_confirmation" id="delete-item">
           </form></td>
       </tr>
       <% end %>
