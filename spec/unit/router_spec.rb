@@ -19,11 +19,6 @@ describe PaitinHana::Routing::Router do
     router.draw(&block).route_info
   end
 
-  def route(regexp, placeholders, controller, action, path)
-    pattern = [regexp, placeholders]
-    { path: path, pattern: pattern, class_and_method: [controller, action] }
-  end
-
   context "endpoints" do
     context "get '/photos', to: 'photos#index'" do
       subject do
