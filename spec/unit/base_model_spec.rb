@@ -1,7 +1,7 @@
 require "spec_helper"
 RSpec.describe PaitinHana::ORM::BaseModel do
   describe ".all" do
-    context "when the database is not empty" do
+    context "when the todo table is not empty" do
       before(:all) do
         Todo.destroy_all
         create_list(:todo, 4)
@@ -11,7 +11,7 @@ RSpec.describe PaitinHana::ORM::BaseModel do
         Todo.destroy_all
       end
 
-      it "returns the correct number of items in a database table" do
+      it "returns the correct number of items in a table" do
         expect(Todo.all.count).to eq 4
       end
 
@@ -28,6 +28,25 @@ RSpec.describe PaitinHana::ORM::BaseModel do
     end
   end
 
+  describe ".find" do
+    after(:all) do
+      Todo.destroy_all
+    end
+
+    it "returns object when an id that has a record is entered" do
+      object = Todo.create(attributes_for(:todo))
+
+      expect(Todo.find(object.id).title).to eq object.title
+      expect(Todo.find(object.id).todo).to eq object.todo
+      expect(Todo.find(object.id).status).to eq object.status
+    end
+
+    it "returns nil when an id with no record is entered" do
+      invalid_id = Todo.last.id + 1
+      expect(Todo.find(invalid_id)).to eq nil
+    end
+  end
+
   describe ".count" do
     after(:all) do
       Todo.destroy_all
@@ -38,19 +57,11 @@ RSpec.describe PaitinHana::ORM::BaseModel do
     end
   end
 
-  describe ".find" do
-    after(:all) do
-      Todo.destroy_all
-    end
-
-    it "returns object when an id that has a record is entered" do
-      object = create(:todo)
-      expect(Todo.find(Todo.last.id).title).to eq object.title
-    end
-
-    it "returns nil when an id with no record is entered" do
-      invalid_id = Todo.last.id + 1
-      expect(Todo.find(invalid_id)).to eq nil
+  describe ".create" do
+    it "can create a new record in the database table" do
+      expect do
+        Todo.create(attributes_for(:todo))
+      end.to change(Todo, :count).by(1)
     end
   end
 
@@ -97,18 +108,24 @@ RSpec.describe PaitinHana::ORM::BaseModel do
   end
 
   describe ".destroy" do
+    before(:all) do
+      @object = Todo.create(attributes_for(:todo))
+    end
+
+    it "should return the last created item" do
+      expect(Todo.find(@object.id)).to be_a Todo
+    end
+
     it "deletes the record from the table" do
-      object = create(:todo)
-      Todo.destroy(object.id)
-      expect(Todo.find(object.id)).to eq nil
+      Todo.destroy(@object.id)
+      expect(Todo.find(@object.id)).to eq nil
     end
   end
 
   describe ".destroy_all" do
     it "deletes every record in the database" do
       create_list(:todo, 3)
-      Todo.destroy_all
-      expect(Todo.count).to eq 0
+      expect { Todo.destroy_all }.to change(Todo, :count).by(-3)
     end
   end
 

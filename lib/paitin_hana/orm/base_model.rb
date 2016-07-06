@@ -26,7 +26,7 @@ module PaitinHana
 
         def count
           result = db.execute "SELECT COUNT(*) FROM #{table_name}"
-          result.first.first
+          result.flatten.first
         end
 
         def create(attributes)
@@ -38,7 +38,7 @@ module PaitinHana
         end
 
         [%w(last DESC), %w(first ASC)].each do |method_name_and_order|
-          define_method((method_name_and_order[0]).to_s.to_sym) do
+          define_method(method_name_and_order[0]) do
             query = "SELECT * FROM #{table_name} ORDER BY "\
             "id #{method_name_and_order[1]} LIMIT 1"
             row = db.execute query
@@ -97,8 +97,7 @@ module PaitinHana
       end
 
       def destroy
-        table = self.class.table_name
-        self.class.db.execute "DELETE FROM #{table} WHERE id= ?", id
+        self.class.destroy id
       end
     end
   end
