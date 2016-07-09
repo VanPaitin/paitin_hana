@@ -57,9 +57,11 @@ module PaitinHana
 
       def save
         table = self.class.table_name
+        current_time = Time.now.strftime("%I:%M.%S %p on %a, %b %d, %Y")
         query = if id
                   "UPDATE #{table} SET #{update_placeholders} WHERE id = ?"
                 else
+                  self.updated_at = self.created_at = current_time
                   "INSERT INTO #{table} (#{self.class.table_columns}) VALUES "\
                   "(#{record_placeholders})"
                 end
@@ -77,6 +79,8 @@ module PaitinHana
       end
 
       def update_placeholders(attributes = self.class.properties)
+        updated_time = Time.now.strftime("%I:%M.%S %p on %a, %b %d, %Y")
+        attributes[:updated_at] = updated_time
         columns = attributes.keys
         columns.delete(:id)
         columns.map { |column| "#{column}= ?" }.join(", ")

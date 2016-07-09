@@ -17,6 +17,11 @@ module PaitinHana
 
       def property(column_name, info)
         @properties ||= {}
+        unless @properties.keys.include? :updated_at
+          @properties[:created_at] = { type: :text, nullable: false }
+          @properties[:updated_at] = { type: :text, nullable: false }
+          attr_accessor :created_at, :updated_at
+        end
         @properties[column_name] = info
         attr_accessor column_name
       end
@@ -40,7 +45,7 @@ module PaitinHana
 
       def analyze_info(property_field, info)
         info.each do |key, value|
-          property_field << send(key.to_s, value)
+          property_field << send(key, value)
         end
       end
 
