@@ -35,7 +35,6 @@ RSpec.describe PaitinHana::ORM::BaseModel do
 
     it "returns object when an id that has a record is entered" do
       object = Todo.create(attributes_for(:todo))
-
       expect(Todo.find(object.id).title).to eq object.title
       expect(Todo.find(object.id).todo).to eq object.todo
       expect(Todo.find(object.id).status).to eq object.status
@@ -154,7 +153,9 @@ RSpec.describe PaitinHana::ORM::BaseModel do
 
     it "updates the object" do
       @object.update(todo: "do this for me")
-      expect(Todo.find(@object.id).todo).to eq "do this for me"
+      new_object = Todo.find(@object.id)
+      expect(@object.todo).to_not eq "do this for me"
+      expect(new_object.todo).to eq "do this for me"
     end
   end
 

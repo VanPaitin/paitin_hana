@@ -15,23 +15,14 @@ class TodolistController < PaitinHana::BaseController
   end
 
   def create
-    todolist = Todo.new
-    todolist.title = params["title"]
-    todolist.todo = params["todo"]
-    todolist.status = params["status"]
-    todolist.created_at = Time.now.strftime("%I:%M.%S %p on %a, %b %d, %Y")
-    todolist.updated_at = todolist.created_at
+    todolist = Todo.new todo_params
     todolist.save
     redirect_to "/todos"
   end
 
   def update
     todolist = Todo.find(params["id"])
-    todolist.title = params["title"]
-    todolist.todo = params["todo"]
-    todolist.status = params["status"]
-    todolist.updated_at = Time.now.strftime("%I:%M.%S %p on %a, %b %d, %Y")
-    todolist.save
+    todolist.update(todo_params)
     redirect_to "/todos"
   end
 
@@ -39,5 +30,11 @@ class TodolistController < PaitinHana::BaseController
     @todolist = Todo.find(params["id"])
     @todolist.destroy
     redirect_to "/todos"
+  end
+
+  private
+
+  def todo_params
+    { title: params["title"], todo: params["todo"], status: params["status"] }
   end
 end
