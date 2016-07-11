@@ -1,84 +1,63 @@
 require "spec_helper"
 
-module PaitinHana
-  module Routing
-    class Router
-      attr_reader :route_info
-
-      def draw(&block)
-        instance_eval(&block)
-        self
-      end
-    end
-  end
-end
-
-describe PaitinHana::Routing::Router do
-  def draw(&block)
-    router = PaitinHana::Routing::Router.new
-    router.draw(&block).route_info
+RSpec.describe PaitinHana::Routing::Router do
+  before(:all) do
+    @router = PaitinHana::Routing::Router.new
   end
 
-  context "endpoints" do
-    context "get '/photos', to: 'photos#index'" do
-      subject do
-        draw { get "/photos", to: "photos#index" }
-      end
+  describe "a router instance" do
+    subject { @router }
 
-      route_info = {
-        path: "/photos",
-        pattern: [%r{^/photos$}, []],
-        class_and_method: ["PhotosController", :index]
-      }
+    it { is_expected.to respond_to(:get) }
 
-      it { is_expected.to eq route_info }
+    it { is_expected.to respond_to(:post) }
+
+    it { is_expected.to respond_to(:put) }
+
+    it { is_expected.to respond_to(:patch) }
+
+    it { is_expected.to respond_to(:delete) }
+
+    it { is_expected.to respond_to(:root) }
+  end
+
+  describe "#pattern_for" do
+    let(:path) { "/routes" }
+
+    describe "the nature of its return value" do
+      it { expect(@router.pattern_for(path)).to be_a Array }
+
+      it { expect(@router.pattern_for(path).length).to eql 2 }
+
+      it { expect(@router.pattern_for(path)[0]).to be_a Regexp }
+
+      it { expect(@router.pattern_for(path)[-1]).to be_a Array }
     end
 
-    context "get '/photos/:id', to: 'photos#show'" do
-      subject do
-        draw { get "/photos/:id", to: "photos#show" }
+    context "when there are no placeholders" do
+      it "the placeholders array should be empty" do
+        expect(@router.pattern_for(path)[-1]).to be_empty
       end
-
-      route_info = {
-        path: "/photos/:id",
-        pattern: [%r{^/photos/(?<id>\w+)$}, ["id"]],
-        class_and_method: ["PhotosController", :show]
-      }
-
-      it { is_expected.to eq route_info }
     end
 
-    context "get '/photos/:id/edit', to: 'photos#edit'" do
-      subject do
-        draw { get "/photos/:id/edit", to: "photos#edit" }
+    context "when there are placeholders" do
+      it "the placeholders array should contain the placeholders" do
+        expect(@router.pattern_for("/photos/:id")[-1]).to eql ["id"]
+        expect(@router.pattern_for("/photos/:id/edit/:placeholders")[-1]).
+          to eql ["id", "placeholders"]
       end
-
-      regexp = %r{^/photos/(?<id>\w+)/edit$}
-      route_info = {
-        path: "/photos/:id/edit",
-        pattern: [regexp, ["id"]],
-        class_and_method: ["PhotosController", :edit]
-      }
-
-      it { is_expected.to eq route_info }
     end
 
-    context "get 'album/:album_id/photos/:photo_id',to: 'photos#album_photo'" do
-      subject do
-        draw do
-          get "/album/:album_id/photos/:photo_id",
-              to: "photos#album_photo"
-        end
+    describe "the regex pattern generation" do
+      it "should return the correct regex pattern" do
+        regexp = %r{^/photos/(?<id>\w+)/edit$}
+        expect(@router.pattern_for('/photos/:id/edit')[0]).to eql regexp
       end
+    end
 
-      regexp = %r{^/album/(?<album_id>\w+)/photos/(?<photo_id>\w+)$}
-      route_info = {
-        path: "/album/:album_id/photos/:photo_id",
-        pattern: [regexp, %w(album_id photo_id)],
-        class_and_method: ["PhotosController", :album_photo]
-      }
-
-      it { is_expected.to eq route_info }
+    it "should return the correct pattern and placeholders" do
+      expect(@router.pattern_for("/photos/:id")).
+        to eql [%r{^/photos/(?<id>\w+)$}, ["id"]]
     end
   end
 end

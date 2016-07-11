@@ -10,11 +10,10 @@ module PaitinHana
       @@allowed_methods.each do |method_name|
         define_method(method_name) do |path, to:|
           path = "/#{path}" unless path[0] = "/"
-          class_and_method = controller_and_action_for(to)
           @route_info = {
                           path: path,
                           pattern: pattern_for(path),
-                          class_and_method: class_and_method
+                          class_and_method: controller_and_action_for(to)
                         }
           @app_routes[method_name] << @route_info
         end

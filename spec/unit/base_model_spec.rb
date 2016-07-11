@@ -16,8 +16,8 @@ RSpec.describe PaitinHana::ORM::BaseModel do
       end
 
       it "returns objects as elements of an array" do
+        expect(Todo.all).to be_a Array
         expect(Todo.all.first).to be_a Todo
-        expect(Todo.all.last).to be_a Todo
       end
     end
 
