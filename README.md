@@ -67,12 +67,11 @@ class Todo < PaitinHana::ORM::BaseModel
   property :title, type: :text, nullable: false
   property :body, type: :text, nullable: false
   property :status, type: :text, nullable: false
-  property :created_at, type: :text, nullable: false
   create_table
 end
 ```
 
-The `property` method is provided to declare table columns, and their properties. The first argument to `property` is the column name, while subsequent hash arguments are used to provide information about properties.
+The `property` method is provided to declare table columns, and their properties. The first argument to `property` is the column name, while subsequent hash arguments are used to provide information about properties. You should also understand that you are not required to define any **timestamps** column as the base model takes care of that for you just like rails. It provides two extra columns `:created_at` and `:updated_at`.
 
 ## Limitations
 

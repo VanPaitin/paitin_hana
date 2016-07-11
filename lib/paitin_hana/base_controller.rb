@@ -6,7 +6,7 @@ module PaitinHana
     attr_reader :request
 
     def initialize(env)
-      @request ||= Rack::Request.new(env)
+      @request = Rack::Request.new(env)
     end
 
     def params
