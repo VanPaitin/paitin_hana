@@ -9,25 +9,23 @@ RSpec.describe MyTodoList, type: :feature, js: true do
     Todo.destroy_all
   end
 
-  scenario "the root path should be the todo index page" do
+  scenario "root path is the index page" do
     visit "/"
     expect(page).to have_title "index"
   end
 
   feature "todo items display" do
-    context "when there are no todo items" do
-      scenario "should inform the user there are no items" do
-        visit "/todos"
-        expect(page).to have_selector(
-          "h3",
-          text: "You have not created any Todos"
-        )
-        expect(page).to have_no_css("table")
-      end
+    scenario "when there are no todo items" do
+      visit "/todos"
+      expect(page).to have_selector(
+        "h3",
+        text: "You have not created any Todos"
+      )
+      expect(page).to have_no_css("table")
     end
 
     context "when todo items have been created" do
-      scenario "should list the todo items in a tabular form" do
+      it "should list the todo items in a tabular form" do
         create_list(:todo, 3)
 
         visit "/todos"
@@ -39,7 +37,7 @@ RSpec.describe MyTodoList, type: :feature, js: true do
         end
       end
 
-      scenario "should list items created on the index page" do
+      it "should list items created on the index page" do
         todolist = create(:todo)
 
         visit "/todos"
@@ -49,7 +47,7 @@ RSpec.describe MyTodoList, type: :feature, js: true do
     end
   end
 
-  feature "it can create a new item" do
+  feature "todo item creation" do
     scenario "creating a todo item" do
       expect do
         visit "/todo/new"
@@ -61,8 +59,8 @@ RSpec.describe MyTodoList, type: :feature, js: true do
     end
   end
 
-  feature "it can show a todo item" do
-    scenario "a todolist has a show page with its details" do
+  feature "showing a todo item" do
+    scenario "visiting a todo item's show page" do
       todolist = Todo.create(attributes_for(:todo))
 
       visit "/todos"
@@ -77,12 +75,12 @@ RSpec.describe MyTodoList, type: :feature, js: true do
     end
   end
 
-  feature "a todo item can be updated and deleted" do
+  feature "todo item update and deletion" do
     before(:each) do
       @todolist = Todo.create(attributes_for :todo)
     end
 
-    scenario "todo can be updated" do
+    scenario "updating a todo item" do
       old_title = @todolist.title
 
       visit "/todo/#{@todolist.id}/edit"
@@ -95,7 +93,7 @@ RSpec.describe MyTodoList, type: :feature, js: true do
       expect(reloaded_todo.title).to eql "TIA"
     end
 
-    scenario "a todo can be deleted" do
+    scenario "deleting a todo item" do
       visit "/todos"
       click_button "delete-item"
       click_button "Yes"
@@ -104,8 +102,8 @@ RSpec.describe MyTodoList, type: :feature, js: true do
     end
   end
 
-  feature "it responds to invalid routes" do
-    scenario "it should indicate that the route could not be found" do
+  feature "response to invalid routes" do
+    scenario "visiting an invalid route" do
       visit "/invalid_routes"
       expect(page).to have_content "Route not found"
     end
