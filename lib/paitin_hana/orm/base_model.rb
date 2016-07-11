@@ -3,65 +3,88 @@ require_relative "orm_helper"
 module PaitinHana
   module ORM
     class BaseModel
-      extend PaitinHana::ORM::ORMHelper
+      include PaitinHana::ORM::ORMHelper
+
+      class << self
+        attr_accessor :properties, :db
+      end
 
       def initialize(attributes = {})
         attributes.each { |column, value| send("#{column}=", value) }
       end
 
-      class << self
-        attr_accessor :properties, :db
-        def all
-          query = "SELECT * FROM #{table_name} ORDER BY id DESC"
-          result = db.execute query
-          result.map { |row| find_object(row) }
-        end
+      def self.create_table
+        @db ||= PaitinHana::ORM::Database.connect
+        query = <<-TABLE
+        CREATE TABLE IF NOT EXISTS #{table_name} (
+          #{table_fields.join(', ')}
+        )
+        TABLE
+        db.execute(query)
+      end
 
-        def find(id)
-          row = db.execute(
-            "SELECT * from #{table_name} WHERE id= ?", "#{id}"
-          ).first
-          row.nil? ? nil : find_object(row)
+      def self.property(column_name, info)
+        @properties ||= {}
+        unless @properties.keys.include? :updated_at
+          @properties[:created_at] = { type: :text, nullable: false }
+          @properties[:updated_at] = { type: :text, nullable: false }
+          attr_accessor :created_at, :updated_at
         end
+        @properties[column_name] = info
+        attr_accessor column_name
+      end
 
-        def count
-          result = db.execute "SELECT COUNT(*) FROM #{table_name}"
-          result.flatten.first
-        end
+      def self.all
+        query = "SELECT * FROM #{table_name} ORDER BY id DESC"
+        result = db.execute query
+        result.map { |row| find_object(row) }
+      end
 
-        def create(attributes)
-          object = new(attributes)
-          object.save
-          id = db.execute "SELECT last_insert_rowid()"
-          object.id = id.first.first
-          object
-        end
+      def self.find(id)
+        row = db.execute(
+          "SELECT * from #{table_name} WHERE id= ?", "#{id}"
+        ).first
+        row.nil? ? nil : find_object(row)
+      end
 
-        [%w(last DESC), %w(first ASC)].each do |method_name_and_order|
-          define_method(method_name_and_order[0]) do
-            query = "SELECT * FROM #{table_name} ORDER BY "\
-            "id #{method_name_and_order[1]} LIMIT 1"
-            row = db.execute query
-            find_object(row.first) unless row.empty?
-          end
-        end
+      def self.count
+        result = db.execute "SELECT COUNT(*) FROM #{table_name}"
+        result.flatten.first
+      end
 
-        def destroy(id)
-          db.execute "DELETE FROM #{table_name} WHERE id= ?", id
-        end
+      def self.create(attributes)
+        object = new(attributes)
+        object.save
+        id = db.execute "SELECT last_insert_rowid()"
+        object.id = id.first.first
+        object
+      end
 
-        def destroy_all
-          db.execute "DELETE FROM #{table_name}"
+      def self.destroy(id)
+        db.execute "DELETE FROM #{table_name} WHERE id= ?", id
+      end
+
+      def self.destroy_all
+        db.execute "DELETE FROM #{table_name}"
+      end
+
+      [%w(last DESC), %w(first ASC)].each do |method_name_and_order|
+        define_singleton_method(method_name_and_order[0]) do
+          query = "SELECT * FROM #{table_name} ORDER BY "\
+          "id #{method_name_and_order[1]} LIMIT 1"
+          row = db.execute query
+          find_object(row.first) unless row.empty?
         end
       end
 
       def save
         table = self.class.table_name
-        current_time = Time.now.strftime("%I:%M.%S %p on %a, %b %d, %Y")
         query = if id
                   "UPDATE #{table} SET #{update_placeholders} WHERE id = ?"
                 else
-                  self.updated_at = self.created_at = current_time
+                  self.updated_at = self.created_at = Time.now.strftime(
+                    "%I:%M.%S %p on %a, %b %d, %Y"
+                  )
                   "INSERT INTO #{table} (#{self.class.table_columns}) VALUES "\
                   "(#{record_placeholders})"
                 end
@@ -76,28 +99,6 @@ module PaitinHana
         query = "UPDATE #{table} SET #{update_placeholders(attributes)}"\
         " WHERE id= ?"
         self.class.db.execute(query, update_values(attributes))
-      end
-
-      def update_placeholders(attributes = self.class.properties)
-        updated_time = Time.now.strftime("%I:%M.%S %p on %a, %b %d, %Y")
-        attributes[:updated_at] = updated_time
-        columns = attributes.keys
-        columns.delete(:id)
-        columns.map { |column| "#{column}= ?" }.join(", ")
-      end
-
-      def update_values(attributes)
-        attributes.values << id
-      end
-
-      def record_placeholders
-        (["?"] * (self.class.properties.keys.size - 1)).join(",")
-      end
-
-      def record_values
-        column_names = self.class.properties.keys
-        column_names.delete(:id)
-        column_names.map { |column_name| send(column_name) }
       end
 
       def destroy
