@@ -24,26 +24,26 @@ RSpec.describe MyTodoList, type: :feature, js: true do
       expect(page).to have_no_css("table")
     end
 
-    context "when todo items have been created" do
-      it "should list the todo items in a tabular form" do
-        create_list(:todo, 3)
+    scenario "listing the todo items in a tabular form" do
+      create_list(:todo, 3)
 
-        visit "/todos"
-        expect(page).to have_css("table")
-        within "table" do
-          expect(page).to have_text "Title"
-          expect(page).to have_content "Content"
-          expect(page).to have_content "Status"
-        end
+      visit "/todos"
+      expect(page).to have_css("table")
+      within "table" do
+        expect(page).to have_text "Title"
+        expect(page).to have_content "Content"
+        expect(page).to have_content "Status"
       end
+    end
+      
 
-      it "should list items created on the index page" do
-        todolist = create(:todo)
+    scenario "lists items created on the index page" do
+      todolist = create(:todo)
 
-        visit "/todos"
-        expect(page).to have_content todolist.todo
-        expect(page).to have_content todolist.title
-      end
+      visit "/todos"
+      expect(page).to have_title "index"
+      expect(page).to have_content todolist.todo
+      expect(page).to have_content todolist.title
     end
   end
 
