@@ -42,7 +42,7 @@ RSpec.describe PaitinHana::ORM::BaseModel do
       end
     end
 
-    context "when an invalid id is passed as argument" do
+    context "when an invalid id (id with no record) is passed as argument" do
       it "should return nil" do
         invalid_id = Todo.last.id + 1
         expect(Todo.find(invalid_id)).to eq nil

@@ -34,8 +34,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rack-test", "~> 0.6"
   spec.add_development_dependency "sqlite3", "~> 1.3"
   spec.add_development_dependency "capybara"
+  spec.add_development_dependency "puma"
   spec.add_development_dependency "faker"
-  spec.add_development_dependency "selenium-webdriver"
+  spec.add_development_dependency "selenium-webdriver", "2.35.0"
   spec.add_development_dependency "factory_girl"
   spec.add_development_dependency "simplecov"
 
