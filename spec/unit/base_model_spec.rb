@@ -23,7 +23,7 @@ RSpec.describe PaitinHana::ORM::BaseModel do
 
     context "when the todo table is empty" do
       it "returns an empty array" do
-        expect(Todo.all.empty?).to eq true
+        expect(Todo.all).to be_empty
       end
     end
   end
@@ -33,16 +33,20 @@ RSpec.describe PaitinHana::ORM::BaseModel do
       Todo.destroy_all
     end
 
-    it "returns object when an id that has a record is entered" do
-      object = Todo.create(attributes_for(:todo))
-      expect(Todo.find(object.id).title).to eq object.title
-      expect(Todo.find(object.id).todo).to eq object.todo
-      expect(Todo.find(object.id).status).to eq object.status
+    context "when a valid id is passed as argument" do
+      it "should return the object with that id" do
+        object = Todo.create(attributes_for(:todo))
+        expect(Todo.find(object.id).title).to eq object.title
+        expect(Todo.find(object.id).todo).to eq object.todo
+        expect(Todo.find(object.id).status).to eq object.status
+      end
     end
 
-    it "returns nil when an id with no record is entered" do
-      invalid_id = Todo.last.id + 1
-      expect(Todo.find(invalid_id)).to eq nil
+    context "when an invalid id is passed as argument" do
+      it "should return nil" do
+        invalid_id = Todo.last.id + 1
+        expect(Todo.find(invalid_id)).to eq nil
+      end
     end
   end
 
@@ -91,13 +95,13 @@ RSpec.describe PaitinHana::ORM::BaseModel do
     end
 
     context "when the database table is empty" do
-      it "returns nil if the table is empty" do
+      it "should return nil" do
         expect(Todo.first).to eq nil
       end
     end
 
     context "when database table is not empty" do
-      it "returns the last record of the table" do
+      it "should return the first record of the table" do
         first_todo = create(:todo)
         create_list(:todo, 2)
         expect(Todo.first.title).to eq first_todo.title
@@ -109,10 +113,6 @@ RSpec.describe PaitinHana::ORM::BaseModel do
   describe ".destroy" do
     before(:all) do
       @object = Todo.create(attributes_for(:todo))
-    end
-
-    it "should return the last created item" do
-      expect(Todo.find(@object.id)).to be_a Todo
     end
 
     it "deletes the record from the table" do
@@ -173,7 +173,7 @@ RSpec.describe PaitinHana::ORM::BaseModel do
       end
     end
 
-    context "when the object has an id already" do
+    context "when the object has an id" do
       before(:all) do
         @new_record = Todo.create(attributes_for(:todo))
       end
