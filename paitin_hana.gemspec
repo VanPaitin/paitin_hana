@@ -37,7 +37,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rubyzip", "0.9.9"
   spec.add_development_dependency "puma"
   spec.add_development_dependency "faker"
-  spec.add_development_dependency "selenium-webdriver"
+  spec.add_development_dependency "selenium-webdriver", '2.29.0'
   spec.add_development_dependency "factory_girl"
   spec.add_development_dependency "simplecov"
 
